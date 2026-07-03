@@ -17,3 +17,12 @@ services:
       - "3000:3000"
     volumes:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+
+
+  nagios:
+    image: jasonrivers/nagios:latest
+    container_name: tourism-nagios
+    ports:
+      - "8082:80"
+    volumes:
+      - ./monitoring/nagios/smart-tourism.cfg:/opt/nagios/etc/objects/smart-tourism.cfg
