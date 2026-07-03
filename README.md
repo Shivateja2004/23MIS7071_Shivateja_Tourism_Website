@@ -85,26 +85,53 @@ kubectl describe pod -n tourism
 kubectl rollout status deployment/smart-tourism-portal -n tourism
 ```
 
-## Jenkins
+## Jenkins Freestyle Job
 
-Use the included `Jenkinsfile` to create a CI/CD pipeline.
+Jenkins is already using `http://localhost:8080`, so the Spring Boot application runs on `http://localhost:8085`.
 
-1. Open Jenkins in the browser at `http://localhost:8080`.
+Create a Freestyle project instead of a Pipeline job:
+
+1. Open Jenkins at `http://localhost:8080`.
 2. Select **New Item**.
-3. Enter the job name `Smart-Tourism-Portal-Pipeline`.
-4. Select **Pipeline**, then click **OK**.
-5. In **General**, add a short description such as `CI/CD pipeline for Smart Tourism Information Portal`.
-6. In **Pipeline**, choose **Pipeline script from SCM**.
-7. Select **Git** as the SCM.
-8. Enter the GitHub repository URL for this project.
-9. Set the branch to `*/main`.
-10. Set **Script Path** to `Jenkinsfile`.
-11. Click **Save**.
-12. Click **Build Now** to start the pipeline.
+3. Enter `Smart-Tourism-Portal-Freestyle`.
+4. Select **Freestyle project**, then click **OK**.
+5. Under **Source Code Management**, select **Git**.
+6. Enter the repository URL.
+7. Set the branch to `*/main`.
+8. Under **Build Steps**, select **Execute Windows batch command**.
+9. Enter this command:
 
-The pipeline performs checkout, Maven clean, Maven test, Maven package, Docker image build, old container removal, Docker container run, Kubernetes deployment, deployment verification, and artifact archiving.
+```bat
+call jenkins-freestyle-build.bat
+```
 
-Before running the Jenkins job, confirm that the Jenkins agent has Java 21, Maven, Docker Desktop, kubectl, and access to the project GitHub repository.
+10. Under **Post-build Actions**, select **Archive the artifacts**.
+11. Set **Files to archive** to:
+
+```text
+target/*.jar
+```
+
+12. Click **Save**.
+13. Click **Build Now**.
+
+The Freestyle build script performs Java verification, Maven verification, `mvn clean`, `mvn test`, `mvn package`, Docker image build, old container removal, Docker container run, optional Kubernetes deployment when Minikube is running, pod verification, and service verification.
+
+Before running the Jenkins job, confirm that the Jenkins Windows agent has Java 21, Maven, Docker Desktop, Git, and optional kubectl/Minikube available on `PATH`.
+
+### Optional Pipeline Job
+
+The repository also contains a corrected Declarative Pipeline file at the repository root:
+
+```text
+Jenkinsfile
+```
+
+If you create a Pipeline job later, use this Jenkins Script Path:
+
+```text
+Jenkinsfile
+```
 
 ## Monitoring
 
