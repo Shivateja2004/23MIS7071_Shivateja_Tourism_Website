@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: Smart Tourism Dashboards
+    folder: Smart Tourism
+    type: file
+    options:
+      path: /etc/grafana/provisioning/dashboards

@@ -1,0 +1,17 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{layout :: head('Home')}"></head><body><nav th:replace="~{layout :: nav}"></nav>
+<main class="hero">
+  <section class="container py-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <h1 class="display-5 fw-bold">Smart Tourism Information Portal</h1>
+        <p class="lead">Discover attractions, hotels, travel guides, maps, tips, and booking links from one responsive Spring Boot website.</p>
+        <a class="btn btn-primary btn-lg" href="/attractions">Explore Attractions</a>
+        <a class="btn btn-outline-light btn-lg ms-2" href="/contact">Plan a Trip</a>
+      </div>
+      <div class="col-lg-5"><div class="map-panel"><iframe title="Google Map" loading="lazy" src="https://maps.google.com/maps?q=India%20tourism&t=&z=5&ie=UTF8&iwloc=&output=embed"></iframe></div></div>
+    </div>
+  </section>
+</main>
+<section class="container py-5"><h2>Featured Attractions</h2><div class="row g-3"><div class="col-md-4" th:each="item:${attractions}"><div class="card h-100"><div class="card-body"><span class="badge text-bg-success" th:text="${item.category()}"></span><h3 th:text="${item.name()}"></h3><p th:text="${item.description()}"></p><small th:text="${item.location()}"></small></div></div></div></div></section>
+<section class="container pb-5"><h2>Recommended Hotels</h2><div class="row g-3"><div class="col-md-4" th:each="hotel:${hotels}"><div class="card h-100"><div class="card-body"><h3 th:text="${hotel.name()}"></h3><p th:text="${hotel.city()}"></p><a th:href="${hotel.bookingUrl()}" target="_blank">Book now</a></div></div></div></div></section>
+<footer th:replace="~{layout :: footer}"></footer></body></html>

@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: smart-tourism-ingress
+  namespace: tourism
+spec:
+  rules:
+    - host: tourism.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: smart-tourism-service
+                port:
+                  number: 80

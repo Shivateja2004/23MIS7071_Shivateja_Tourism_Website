@@ -1,0 +1,24 @@
+pipeline {
+  agent any
+  tools { maven 'Maven' }
+  environment {
+    IMAGE_NAME = 'smart-tourism-portal'
+    CONTAINER_NAME = 'smart-tourism-portal'
+  }
+  stages {
+    stage('Checkout') { steps { checkout scm } }
+    stage('Maven Clean') { steps { bat 'mvn clean' } }
+    stage('Maven Test') { steps { bat 'mvn test' } }
+    stage('Maven Package') { steps { bat 'mvn package -DskipTests' } }
+    stage('Build Docker Image') { steps { bat 'docker build -t %IMAGE_NAME%:1.0.0 .' } }
+    stage('Remove Old Container') { steps { bat 'docker rm -f %CONTAINER_NAME% || exit 0' } }
+    stage('Run Docker Container') { steps { bat 'docker run -d --name %CONTAINER_NAME% -p 8085:8085 %IMAGE_NAME%:1.0.0' } }
+    stage('Deploy to Kubernetes') { steps { bat 'kubectl apply -f kubernetes/' } }
+    stage('Verify Deployment') { steps { bat 'kubectl rollout status deployment/smart-tourism-portal -n tourism' } }
+    stage('Archive Artifacts') { steps { archiveArtifacts artifacts: 'target/*.jar', fingerprint: true } }
+  }
+  post {
+    success { echo 'Smart Tourism Portal pipeline completed successfully.' }
+    failure { echo 'Pipeline failed. Check Maven, Docker, and Kubernetes logs.' }
+  }
+}
